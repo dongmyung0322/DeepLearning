@@ -1,0 +1,41 @@
+1. train dataset move into downloaded yolo folder
+
+2. ./data/ create yaml file
+train: ./dataset/train/images
+val: ./dataset/train.images
+# classes
+names:
+    0: person
+    1: bicycle
+    2: car
+
+3. hyps file setting lr, aug val
+./data/hyps/xxx.yaml
+* hyp.scratch-high.yaml >> model size l or x
+* hyp.scratch-med.yaml >> model size m
+* hyp.scratch-low.yaml >> model size n or s
+
+4. train.py
+    parser.add_argument('--weights', type=str, default=ROOT / 'yolov5s.pt', help='initial weights path')
+    >> choose model >> yolov5s.pt / yolov5n.pt ...
+    parser.add_argument('--cfg', type=str, default='', help='model.yaml path')
+    >> pr-train model >> model.yaml /models/yolov5s.yaml
+    >> yolov5n6 >> ./models/hub/yolov5n6.yaml
+    parser.add_argument('--data', type=str, default=ROOT / 'data/coco128.yaml', help='dataset.yaml path')
+    >> change to our yaml file
+    parser.add_argument('--hyp', type=str, default=ROOT / 'data/hyps/hyp.scratch-low.yaml', help='hyperparameters path')
+    >> default = low, change if med. high model
+    parser.add_argument('--epochs', type=int, default=100, help='total training epochs')
+    parser.add_argument('--batch-size', type=int, default=16, help='total batch size for all GPUs, -1 for autobatch')
+    parser.add_argument('--imgsz', '--img', '--img-size', type=int, default=640, help='train, val image size (pixels)')
+    >> if yolov5n6 model >> default = 1280
+    parser.add_argument('--rect', action='store_true', help='rectangular training')
+    >> In terminal >> $python train.py --rect
+    parser.add_argument('--resume', nargs='?', const=True, default=False, help='resume most recent training')
+    >> In terminal >> $python train.py --resume
+    parser.add_argument('--multi-scale', action='store_true', help='vary img-size +/- 50%%')
+    >> img input 640 +-320 == 960~320
+    parser.add_argument('--optimizer', type=str, choices=['SGD', 'Adam', 'AdamW'], default='SGD', help='optimizer')
+    parser.add_argument('--workers', type=int, default=2, help='max dataloader workers (per RANK in DDP mode)')
+    parser.add_argument('--label-smoothing', type=float, default=0.0, help='Label smoothing epsilon')
+    parser.add_argument('--seed', type=int, default=0, help='Global training seed')
